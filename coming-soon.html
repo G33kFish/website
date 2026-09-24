@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coming Soon | EchoPhish</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;400;500;600;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #020407;
+    --deep: #040c12;
+    --panel: #071520;
+    --border: #0f3a52;
+    --accent: #00d4ff;
+    --accent2: #ff3c00;
+    --accent3: #00ff88;
+    --dim: #1a4a62;
+    --text: #a8d8ea;
+    --muted: #3d7a95;
+    --white: #e8f4f8;
+    --glow: 0 0 20px rgba(0,212,255,0.3);
+    --glow2: 0 0 20px rgba(255,60,0,0.3);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--black);
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    cursor: crosshair;
+  }
+
+  /* SCANLINES */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,212,255,0.015) 2px,
+      rgba(0,212,255,0.015) 4px
+    );
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* GRID */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,212,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* NAV */
+  nav {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 4rem;
+    height: 70px;
+    background: rgba(4,12,18,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  .nav-logo {
+    font-family: 'Orbitron', monospace;
+    font-weight: 900;
+    font-size: 1.6rem;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+    text-shadow: var(--glow);
+    text-decoration: none;
+  }
+
+  .nav-logo span { color: var(--accent2); }
+
+  .nav-status {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    color: var(--accent3);
+    text-transform: uppercase;
+  }
+
+  .status-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--accent3);
+    box-shadow: 0 0 8px var(--accent3);
+    animation: pulse-dot 1.5s ease-in-out infinite;
+  }
+
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.8); }
+  }
+
+  /* MAIN */
+  main {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
+    padding: 2rem;
+  }
+
+  .bg-glow {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 70% 55% at 50% 50%, rgba(0,212,255,0.07) 0%, transparent 70%),
+      radial-gradient(ellipse 35% 30% at 15% 80%, rgba(255,60,0,0.04) 0%, transparent 60%),
+      radial-gradient(ellipse 30% 25% at 85% 20%, rgba(0,255,136,0.03) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  /* Sweeping scan line */
+  .scan-sweep {
+    position: absolute;
+    left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(0,212,255,0.5), transparent);
+    animation: sweep 5s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  @keyframes sweep {
+    0%   { top: 0%; opacity: 0; }
+    5%   { opacity: 1; }
+    95%  { opacity: 1; }
+    100% { top: 100%; opacity: 0; }
+  }
+
+  /* Corner brackets */
+  .corner {
+    position: absolute;
+    width: 70px; height: 70px;
+    opacity: 0.35;
+  }
+  .corner.tl { top: 4%; left: 4%; border-top: 2px solid var(--accent); border-left: 2px solid var(--accent); animation: pc 4s ease-in-out infinite; }
+  .corner.tr { top: 4%; right: 4%; border-top: 2px solid var(--accent2); border-right: 2px solid var(--accent2); animation: pc 4s ease-in-out infinite 1s; }
+  .corner.bl { bottom: 4%; left: 4%; border-bottom: 2px solid var(--accent2); border-left: 2px solid var(--accent2); animation: pc 4s ease-in-out infinite 2s; }
+  .corner.br { bottom: 4%; right: 4%; border-bottom: 2px solid var(--accent); border-right: 2px solid var(--accent); animation: pc 4s ease-in-out infinite 3s; }
+
+  @keyframes pc {
+    0%, 100% { opacity: 0.35; }
+    50% { opacity: 0.85; }
+  }
+
+  /* CONTENT */
+  .content {
+    text-align: center;
+    max-width: 860px;
+    width: 100%;
+    position: relative;
+  }
+
+  .eyebrow {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.45em;
+    color: var(--accent3);
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards 0.2s;
+  }
+
+  .main-title {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(2.2rem, 6vw, 5rem);
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: 0.05em;
+    color: var(--white);
+    margin-bottom: 0.5rem;
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards 0.4s;
+  }
+
+  .main-title span {
+    display: block;
+    color: var(--accent);
+    text-shadow: 0 0 40px rgba(0,212,255,0.4);
+  }
+
+  .sub-title {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.3em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin: 1.2rem 0 3rem;
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards 0.6s;
+  }
+
+  /* COUNTDOWN */
+  .countdown-wrap {
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards 0.8s;
+    margin-bottom: 3rem;
+  }
+
+  .countdown {
+    display: flex;
+    justify-content: center;
+    gap: 1px;
+    background: var(--dim);
+    max-width: 580px;
+    margin: 0 auto;
+  }
+
+  .cd-block {
+    background: var(--panel);
+    flex: 1;
+    padding: 2rem 1rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cd-block::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0.6;
+  }
+
+  .cd-num {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 900;
+    color: var(--accent);
+    text-shadow: var(--glow);
+    line-height: 1;
+    display: block;
+    transition: transform 0.15s ease;
+  }
+
+  .cd-num.flip {
+    animation: flip-num 0.15s ease;
+  }
+
+  @keyframes flip-num {
+    0% { transform: translateY(0); opacity: 1; }
+    50% { transform: translateY(-8px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+  }
+
+  .cd-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.55rem;
+    letter-spacing: 0.25em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-top: 0.6rem;
+    display: block;
+  }
+
+  /* PROGRESS BAR */
+  .progress-wrap {
+    max-width: 580px;
+    margin: 1.5rem auto 0;
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards 1s;
+  }
+
+  .progress-header {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+  }
+
+  .progress-bar-bg {
+    height: 4px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent2), var(--accent));
+    width: 0%;
+    animation: fill-bar 2s ease forwards 1.5s;
+    box-shadow: 0 0 10px rgba(0,212,255,0.5);
+    position: relative;
+  }
+
+  .progress-bar-fill::after {
+    content: '';
+    position: absolute;
+    right: 0; top: 0; bottom: 0;
+    width: 20px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4));
+    animation: shimmer 1.5s ease-in-out infinite 2s;
+  }
+
+  @keyframes fill-bar {
+    from { width: 0%; }
+    to { width: 73%; }
+  }
+
+  @keyframes shimmer {
+    0%, 100% { opacity: 0; }
+    50% { opacity: 1; }
+  }
+
+  /* NOTIFY FORM */
+  .notify-wrap {
+    max-width: 480px;
+    margin: 0 auto 2.5rem;
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards 1.1s;
+  }
+
+  .notify-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 0.8rem;
+    display: block;
+    text-align: left;
+  }
+
+  .notify-form {
+    display: flex;
+    gap: 0;
+  }
+
+  .notify-input {
+    flex: 1;
+    background: var(--deep);
+    border: 1px solid var(--border);
+    border-right: none;
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.95rem;
+    padding: 0.85rem 1.2rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .notify-input::placeholder { color: var(--dim); }
+
+  .notify-input:focus {
+    border-color: var(--accent);
+    box-shadow: inset 0 0 0 1px rgba(0,212,255,0.1);
+  }
+
+  .notify-btn {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    padding: 0.85rem 1.5rem;
+    background: var(--accent);
+    color: var(--black);
+    border: none;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all 0.2s;
+    white-space: nowrap;
+    clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%);
+  }
+
+  .notify-btn:hover {
+    background: var(--white);
+    box-shadow: var(--glow);
+  }
+
+  .notify-success {
+    display: none;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    color: var(--accent3);
+    text-align: center;
+    padding: 0.85rem;
+    border: 1px solid var(--accent3);
+    background: rgba(0,255,136,0.05);
+  }
+
+  /* SOCIAL / LINKS */
+  .links-wrap {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards 1.3s;
+  }
+
+  .social-link {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--border);
+    text-transform: uppercase;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .social-link:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+    background: rgba(0,212,255,0.05);
+  }
+
+  .social-link::before { content: '//'; color: var(--accent2); }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* FOOTER */
+  footer {
+    position: relative;
+    z-index: 10;
+    border-top: 1px solid var(--border);
+    padding: 1.2rem 4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(4,12,18,0.7);
+    flex-shrink: 0;
+  }
+
+  .footer-copy {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.55rem;
+    color: var(--dim);
+    letter-spacing: 0.15em;
+  }
+
+  .footer-signal {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.55rem;
+    color: var(--accent3);
+    letter-spacing: 0.15em;
+  }
+
+  .signal-dot {
+    width: 6px; height: 6px;
+    background: var(--accent3);
+    border-radius: 50%;
+    animation: pulse-dot 1.5s ease-in-out infinite;
+    box-shadow: 0 0 6px var(--accent3);
+  }
+
+  @media (max-width: 640px) {
+    nav, footer { padding: 0 1.5rem; }
+    .corner { display: none; }
+    .countdown { gap: 1px; }
+    .cd-block { padding: 1.2rem 0.5rem; }
+    .notify-form { flex-direction: column; }
+    .notify-input { border-right: 1px solid var(--border); border-bottom: none; }
+    .notify-btn { clip-path: none; }
+    footer { flex-direction: column; gap: 0.5rem; text-align: center; padding: 1rem; }
+    .links-wrap { flex-wrap: wrap; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="/" class="nav-logo">ECHO<span>PHISH</span></a>
+  <div class="nav-status">
+    <div class="status-dot"></div>
+    Initializing
+  </div>
+</nav>
+
+<!-- MAIN -->
+<main>
+  <div class="bg-glow"></div>
+  <div class="scan-sweep"></div>
+  <div class="corner tl"></div>
+  <div class="corner tr"></div>
+  <div class="corner bl"></div>
+  <div class="corner br"></div>
+
+  <div class="content">
+
+    <div class="eyebrow">// System Boot Sequence Initiated //</div>
+
+    <h1 class="main-title">
+      MISSION
+      <span>INCOMING</span>
+    </h1>
+
+    <div class="sub-title">// Classified Operations Platform — Launching Soon //</div>
+
+    <!-- COUNTDOWN -->
+    <div class="countdown-wrap">
+      <div class="countdown">
+        <div class="cd-block">
+          <span class="cd-num" id="cd-days">00</span>
+          <span class="cd-label">Days</span>
+        </div>
+        <div class="cd-block">
+          <span class="cd-num" id="cd-hours">00</span>
+          <span class="cd-label">Hours</span>
+        </div>
+        <div class="cd-block">
+          <span class="cd-num" id="cd-mins">00</span>
+          <span class="cd-label">Minutes</span>
+        </div>
+        <div class="cd-block">
+          <span class="cd-num" id="cd-secs">00</span>
+          <span class="cd-label">Seconds</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROGRESS -->
+    <div class="progress-wrap">
+      <div class="progress-header">
+        <span>// Build Progress</span>
+        <span>73% Complete</span>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill"></div>
+      </div>
+    </div>
+
+    <!-- NOTIFY -->
+    <div class="notify-wrap" style="margin-top:2.5rem;">
+      <span class="notify-label">// Request Early Access Clearance</span>
+      <div class="notify-form" id="notify-form">
+        <input type="email" class="notify-input" id="notify-email" placeholder="operative@yourorg.com">
+        <button class="notify-btn" onclick="handleNotify()">Notify Me</button>
+      </div>
+      <div class="notify-success" id="notify-success">
+        [✓] Access request logged — you will be contacted when systems are online.
+      </div>
+    </div>
+
+    <!-- LINKS -->
+    <div class="links-wrap">
+      <a href="#" class="social-link">LinkedIn</a>
+      <a href="#" class="social-link">Twitter / X</a>
+      <a href="mailto:contact@echophish.com" class="social-link">Contact</a>
+    </div>
+
+  </div>
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-copy">© 2026 ECHOPHISH — ALL RIGHTS RESERVED</div>
+  <div class="footer-signal">
+    <div class="signal-dot"></div>
+    SYSTEMS INITIALIZING
+  </div>
+</footer>
+
+<script>
+  // ── COUNTDOWN ──────────────────────────────────────────────
+  // Set your launch date here: YYYY, MM-1 (0-indexed), DD, HH, MM, SS
+  const launchDate = new Date(2026, 5, 1, 0, 0, 0); // June 1, 2026
+
+  const daysEl  = document.getElementById('cd-days');
+  const hoursEl = document.getElementById('cd-hours');
+  const minsEl  = document.getElementById('cd-mins');
+  const secsEl  = document.getElementById('cd-secs');
+
+  function pad(n) { return String(n).padStart(2, '0'); }
+
+  function flipNum(el, newVal) {
+    if (el.textContent !== newVal) {
+      el.classList.remove('flip');
+      void el.offsetWidth; // reflow
+      el.classList.add('flip');
+      el.textContent = newVal;
+    }
+  }
+
+  function updateCountdown() {
+    const now  = new Date();
+    const diff = launchDate - now;
+
+    if (diff <= 0) {
+      daysEl.textContent = hoursEl.textContent = minsEl.textContent = secsEl.textContent = '00';
+      return;
+    }
+
+    const days  = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+    const mins  = Math.floor((diff / (1000 * 60)) % 60);
+    const secs  = Math.floor((diff / 1000) % 60);
+
+    flipNum(daysEl,  pad(days));
+    flipNum(hoursEl, pad(hours));
+    flipNum(minsEl,  pad(mins));
+    flipNum(secsEl,  pad(secs));
+  }
+
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+
+  // ── NOTIFY FORM ────────────────────────────────────────────
+  function handleNotify() {
+    const email = document.getElementById('notify-email').value.trim();
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!re.test(email)) {
+      document.getElementById('notify-email').style.borderColor = 'var(--accent2)';
+      setTimeout(() => {
+        document.getElementById('notify-email').style.borderColor = '';
+      }, 1500);
+      return;
+    }
+
+    document.getElementById('notify-form').style.display = 'none';
+    document.getElementById('notify-success').style.display = 'block';
+  }
+
+  // Allow Enter key on input
+  document.getElementById('notify-email').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') handleNotify();
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>404 — Signal Lost | EchoPhish</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;400;500;600;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #020407;
+    --deep: #040c12;
+    --panel: #071520;
+    --border: #0f3a52;
+    --accent: #00d4ff;
+    --accent2: #ff3c00;
+    --accent3: #00ff88;
+    --dim: #1a4a62;
+    --text: #a8d8ea;
+    --muted: #3d7a95;
+    --white: #e8f4f8;
+    --glow: 0 0 20px rgba(0,212,255,0.3);
+    --glow2: 0 0 20px rgba(255,60,0,0.3);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--black);
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    cursor: crosshair;
+  }
+
+  /* SCANLINE */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,212,255,0.015) 2px,
+      rgba(0,212,255,0.015) 4px
+    );
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* GRID */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,212,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* NAV */
+  nav {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 4rem;
+    height: 70px;
+    background: rgba(4,12,18,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  .nav-logo {
+    font-family: 'Orbitron', monospace;
+    font-weight: 900;
+    font-size: 1.6rem;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+    text-shadow: var(--glow);
+    text-decoration: none;
+  }
+
+  .nav-logo span { color: var(--accent2); }
+
+  .nav-status {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    color: var(--accent2);
+    text-transform: uppercase;
+  }
+
+  .status-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--accent2);
+    box-shadow: 0 0 8px var(--accent2);
+    animation: danger-blink 0.8s ease-in-out infinite;
+  }
+
+  @keyframes danger-blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.2; }
+  }
+
+  /* MAIN */
+  main {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
+    padding: 2rem;
+  }
+
+  /* Radial glow behind content */
+  .bg-glow {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 70% 50% at 50% 50%, rgba(255,60,0,0.06) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 30% at 30% 70%, rgba(0,212,255,0.04) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .content {
+    text-align: center;
+    max-width: 800px;
+    position: relative;
+  }
+
+  /* Giant 404 */
+  .error-code {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(8rem, 22vw, 18rem);
+    font-weight: 900;
+    line-height: 0.85;
+    letter-spacing: -0.04em;
+    color: transparent;
+    -webkit-text-stroke: 1px var(--dim);
+    position: relative;
+    user-select: none;
+    animation: glitch-shift 6s ease-in-out infinite;
+  }
+
+  .error-code::before,
+  .error-code::after {
+    content: '404';
+    position: absolute;
+    inset: 0;
+    font-family: 'Orbitron', monospace;
+    font-weight: 900;
+    -webkit-text-stroke: 0;
+  }
+
+  .error-code::before {
+    color: rgba(255,60,0,0.18);
+    transform: translate(-4px, 2px);
+    animation: glitch-r 6s ease-in-out infinite;
+  }
+
+  .error-code::after {
+    color: rgba(0,212,255,0.18);
+    transform: translate(4px, -2px);
+    animation: glitch-b 6s ease-in-out infinite;
+  }
+
+  @keyframes glitch-shift {
+    0%, 90%, 100% { transform: translate(0); }
+    92% { transform: translate(-3px, 1px); }
+    94% { transform: translate(3px, -1px); }
+    96% { transform: translate(-2px, 2px); }
+    98% { transform: translate(2px, 0); }
+  }
+
+  @keyframes glitch-r {
+    0%, 90%, 100% { transform: translate(-4px, 2px); opacity: 1; }
+    92% { transform: translate(6px, -3px); opacity: 0.5; }
+    94% { transform: translate(-6px, 3px); opacity: 0.8; }
+  }
+
+  @keyframes glitch-b {
+    0%, 90%, 100% { transform: translate(4px, -2px); opacity: 1; }
+    92% { transform: translate(-6px, 3px); opacity: 0.5; }
+    94% { transform: translate(6px, -3px); opacity: 0.8; }
+  }
+
+  /* Eyebrow */
+  .error-eyebrow {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.4em;
+    color: var(--accent2);
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards 0.2s;
+  }
+
+  /* Title */
+  .error-title {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(1.2rem, 3vw, 2rem);
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin: 1.5rem 0 1rem;
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards 0.4s;
+  }
+
+  .error-title span { color: var(--accent); }
+
+  /* Terminal block */
+  .error-terminal {
+    background: rgba(4,12,18,0.9);
+    border: 1px solid var(--border);
+    padding: 1.5rem 2rem;
+    margin: 2rem auto;
+    max-width: 520px;
+    text-align: left;
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards 0.6s;
+    position: relative;
+  }
+
+  .error-terminal::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 2px;
+    background: linear-gradient(90deg, var(--accent2), transparent);
+  }
+
+  .t-line {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.75rem;
+    line-height: 2;
+    display: flex;
+    gap: 0.6rem;
+  }
+
+  .t-prompt { color: var(--accent2); }
+  .t-cmd { color: var(--white); }
+  .t-err { color: var(--accent2); padding-left: 1rem; }
+  .t-warn { color: #ffcc00; padding-left: 1rem; }
+  .t-info { color: var(--muted); padding-left: 1rem; }
+  .t-cursor {
+    display: inline-block;
+    width: 8px; height: 14px;
+    background: var(--accent);
+    vertical-align: middle;
+    animation: cur-blink 1s step-end infinite;
+  }
+
+  @keyframes cur-blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  /* Description */
+  .error-desc {
+    font-size: 1rem;
+    font-weight: 300;
+    color: var(--muted);
+    line-height: 1.8;
+    letter-spacing: 0.05em;
+    max-width: 480px;
+    margin: 0 auto 2.5rem;
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards 0.8s;
+  }
+
+  /* Actions */
+  .error-actions {
+    display: flex;
+    gap: 1.2rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards 1s;
+  }
+
+  .btn-primary {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    padding: 0.9rem 2rem;
+    background: var(--accent);
+    color: var(--black);
+    border: none;
+    cursor: pointer;
+    text-transform: uppercase;
+    text-decoration: none;
+    display: inline-block;
+    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+    transition: all 0.2s;
+    box-shadow: var(--glow);
+  }
+
+  .btn-primary:hover {
+    background: var(--white);
+    box-shadow: 0 0 40px rgba(0,212,255,0.6);
+    transform: translateY(-2px);
+  }
+
+  .btn-secondary {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    padding: 0.9rem 2rem;
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--dim);
+    cursor: pointer;
+    text-transform: uppercase;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.2s;
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(0,212,255,0.05);
+  }
+
+  /* Corner decorations */
+  .corner {
+    position: absolute;
+    width: 60px; height: 60px;
+    opacity: 0.3;
+  }
+
+  .corner.tl { top: 5%; left: 5%; border-top: 2px solid var(--accent2); border-left: 2px solid var(--accent2); animation: pulse-c 3s ease-in-out infinite; }
+  .corner.tr { top: 5%; right: 5%; border-top: 2px solid var(--accent); border-right: 2px solid var(--accent); animation: pulse-c 3s ease-in-out infinite 0.75s; }
+  .corner.bl { bottom: 5%; left: 5%; border-bottom: 2px solid var(--accent); border-left: 2px solid var(--accent); animation: pulse-c 3s ease-in-out infinite 1.5s; }
+  .corner.br { bottom: 5%; right: 5%; border-bottom: 2px solid var(--accent2); border-right: 2px solid var(--accent2); animation: pulse-c 3s ease-in-out infinite 2.25s; }
+
+  @keyframes pulse-c {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.8; }
+  }
+
+  /* Horizontal scan line that sweeps */
+  .scan-sweep {
+    position: absolute;
+    left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(0,212,255,0.4), transparent);
+    animation: sweep 4s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  @keyframes sweep {
+    0% { top: 0%; opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { top: 100%; opacity: 0; }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* FOOTER */
+  footer {
+    position: relative;
+    z-index: 10;
+    border-top: 1px solid var(--border);
+    padding: 1.2rem 4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(4,12,18,0.7);
+    flex-shrink: 0;
+  }
+
+  .footer-copy {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.55rem;
+    color: var(--dim);
+    letter-spacing: 0.15em;
+  }
+
+  .footer-signal {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.55rem;
+    color: var(--accent2);
+    letter-spacing: 0.15em;
+  }
+
+  .signal-dot {
+    width: 6px; height: 6px;
+    background: var(--accent2);
+    border-radius: 50%;
+    animation: danger-blink 0.8s ease-in-out infinite;
+    box-shadow: 0 0 6px var(--accent2);
+  }
+
+  @media (max-width: 600px) {
+    nav, footer { padding: 0 1.5rem; }
+    .corner { display: none; }
+    .error-terminal { padding: 1.2rem 1.2rem; }
+    footer { flex-direction: column; gap: 0.5rem; text-align: center; padding: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="/" class="nav-logo">ECHO<span>PHISH</span></a>
+  <div class="nav-status">
+    <div class="status-dot"></div>
+    Signal Lost
+  </div>
+</nav>
+
+<!-- MAIN -->
+<main>
+  <div class="bg-glow"></div>
+  <div class="scan-sweep"></div>
+
+  <div class="corner tl"></div>
+  <div class="corner tr"></div>
+  <div class="corner bl"></div>
+  <div class="corner br"></div>
+
+  <div class="content">
+    <div class="error-eyebrow">// Error Code Detected //</div>
+    <div class="error-code">404</div>
+
+    <div class="error-title">Target <span>Not Found</span></div>
+
+    <div class="error-terminal">
+      <div class="t-line"><span class="t-prompt">echo@phish:~$</span><span class="t-cmd"> ./trace.sh --url $REQUEST_PATH</span></div>
+      <div class="t-err">[✗] ERROR 404 — Page does not exist in this sector</div>
+      <div class="t-warn">[!] Possible causes: moved target, stale link, or mistype</div>
+      <div class="t-info">[*] Recommend: return to base and re-initiate search</div>
+      <div class="t-line" style="margin-top:0.4rem;"><span class="t-prompt">echo@phish:~$</span><span class="t-cmd"> </span><span class="t-cursor"></span></div>
+    </div>
+
+    <p class="error-desc">The intelligence asset you're looking for has gone dark. It may have been moved, deleted, or never existed. Return to base and re-initiate your search.</p>
+
+    <div class="error-actions">
+      <a href="/" class="btn-primary">Return to Base</a>
+      <a href="/#contact" class="btn-secondary">Report Issue</a>
+    </div>
+  </div>
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-copy">© 2026 ECHOPHISH — ALL RIGHTS RESERVED</div>
+  <div class="footer-signal">
+    <div class="signal-dot"></div>
+    SIGNAL INTERRUPTED
+  </div>
+</footer>
+
+</body>
+</html>
